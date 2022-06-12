@@ -46,12 +46,14 @@ INSTALLED_APPS = [
     'news',
     'bootstrap3',
     'bootstrap4',
+    'bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tinymce',
 ]
 
 MIDDLEWARE = [

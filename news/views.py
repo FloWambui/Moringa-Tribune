@@ -3,8 +3,10 @@ import datetime as dt
 from django.shortcuts import render, redirect
 from .models import Article, NewsLetterRecipients
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import NewsLetterForm
+from .forms import NewArticleForm, NewsLetterForm
 from .email import send_welcome_email
+from django.contrib.auth.decorators import login_required
+
 
 
 # Create your views here.
@@ -58,6 +60,8 @@ def search_results(request):
         message = "You haven't searched for any term"
         return render(request, 'all-news/search.html',{"message":message})
 
+
+@login_required(login_url='/accounts/login/')
 def article(request,article_id):
     try:
         article = Article.objects.get(id = article_id)
@@ -65,3 +69,16 @@ def article(request,article_id):
         raise Http404()
     return render(request,"all-news/article.html", {"article":article})
 
+def new_article(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = NewArticleForm(request.POST, request.FILES)
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.editor = current_user
+            article.save()
+        return redirect('newsToday')
+
+    else:
+        form = NewArticleForm()
+    return render(request, 'new_article.html', {"form": form})
